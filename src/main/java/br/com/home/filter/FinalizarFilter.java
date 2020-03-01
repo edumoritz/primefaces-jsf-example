@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.inject.Inject;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -31,10 +32,24 @@ public class FinalizarFilter implements Filter {
 		HttpServletResponse res = (HttpServletResponse) response;
 		String url = req.getRequestURI().toString();
 		if(url.contains("restricted") && produtoController.getProdutosCarrinho().isEmpty()) {
-			res.sendRedirect(req.getServletContext().getContextPath()+"/paginas/Lista.xhtml");
+			res.sendRedirect(((FilterConfig) req).getServletContext().getContextPath()+"/paginas/Lista.xhtml");
 		} else {
 			filter.doFilter(request, response);
 		}
+		
+	}
+
+
+	@Override
+	public void init(FilterConfig filterConfig) throws ServletException {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void destroy() {
+		// TODO Auto-generated method stub
 		
 	}
 
