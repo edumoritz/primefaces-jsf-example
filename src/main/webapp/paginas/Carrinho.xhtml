@@ -1,0 +1,105 @@
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="../WEB-INF/template/layout.xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+
+	<ui:define name="page_title">Carrinho</ui:define>
+
+	<ui:define name="button_final">
+		<h:form id="form_message_finalizar">
+			<p:growl id="message" showDetail="true" sticky="true" />
+
+			<p:commandButton value="Finalizar"
+				update=":form_message_finalizar:message"
+				action="#{carrinhoController.finalizar}" icon="ui-icon-check">
+			</p:commandButton>
+		</h:form>
+	</ui:define>
+
+
+	<ui:define name="content">
+
+		<h:form id="form">
+			<p:growl id="message" showDetail="true" />
+			<p:dataTable var="c" value="#{carrinhoController.produtosCarrinho}"
+				update="form" editable="true" id="cTable">
+				<f:facet name="header">
+            Lista de Produtos do Carrinho
+        </f:facet>
+
+				<p:ajax event="rowEdit" listener="#{carrinhoController.onRowEdit}"
+					update=":form:message" />
+				<p:ajax event="rowEditCancel"
+					listener="#{carrinhoController.onRowCancel}" update=":form:message" />
+
+				<p:column headerText="Código">
+					<h:outputText value="#{c.produto.id}" />
+				</p:column>
+				<p:column headerText="Descrição">
+					<h:outputText value="#{c.produto.descricao}" />
+				</p:column>
+
+				<p:column headerText="Quantidade">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{c.quantidade}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{c.quantidade}" style="width:100%"
+								label="Qtd" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column headerText="Valor">
+					<div style="text-align: right">
+						<h:outputText value="#{c.produto.valor}">
+							<f:convertNumber type="currency" currencySymbol="R$" />
+						</h:outputText>
+					</div>
+				</p:column>
+
+				<p:column headerText="Frete">
+					<div style="text-align: right">
+						<h:outputText value="#{c.frete}">
+							<f:convertNumber type="currency" currencySymbol="R$" />
+						</h:outputText>
+					</div>
+				</p:column>
+
+				<p:column headerText="Valor Total">
+					<div style="text-align: right">
+						<h:outputText value="#{c.valorTotal}">
+							<f:convertNumber type="currency" currencySymbol="R$" />
+						</h:outputText>
+					</div>
+				</p:column>
+
+				<p:column style="width:35px">
+					<p:rowEditor />
+				</p:column>
+
+				<p:column style="text-align: center;width:40px">
+					<p:commandButton icon="ui-icon-close" title="remove from cart">
+						<p:ajax listener="#{carrinhoController.removeItem(c)}"
+							update="cTable :form:message" process="@this" />
+					</p:commandButton>
+				</p:column>
+
+			</p:dataTable>
+
+		</h:form>
+		<p:dialog id="modalDialog" header="Atenção" widgetVar="dlg2"
+			modal="true" height="100" width="600"
+			visible="#{empty carrinhoController.produtosCarrinho}">
+			<h1>O Carrinho está vazio!</h1>
+		</p:dialog>
+	</ui:define>
+	<script>
+		$(function() {
+			dlg2.show();
+		});
+	</script>
+</ui:composition>

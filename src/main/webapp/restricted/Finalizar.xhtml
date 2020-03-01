@@ -1,0 +1,113 @@
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="../WEB-INF/template/layout.xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+	<ui:define name="page_title">Finalizar</ui:define>
+
+	<ui:define name="content">
+		<p:layout style="min-width:400px;min-height:500px;">
+			<p:layoutUnit position="west" resizable="true" size="800"
+				minSize="40" maxSize="800">
+				<h:form id="form_table">
+					<p:growl id="message" showDetail="true" />
+
+					<p:dataTable var="c"
+						value="#{finalizarController.produtosCarrinho}"
+						style="text-align:center;" editable="true" id="cTable">
+						<f:facet name="header">
+			            Lista de Produtos Comprados
+			        </f:facet>
+						<p:column headerText="Código" style="text-align: left">
+							<h:outputText value="#{c.produto.id}" />
+						</p:column>
+
+						<p:column headerText="Descrição" style="text-align: left">
+							<h:outputText value="#{c.produto.descricao}" />
+						</p:column>
+
+						<p:column headerText="Quantidade" style="text-align: left">
+							<h:outputText value="#{c.quantidade}" />
+						</p:column>
+
+						<p:column headerText="Valor" style="text-align: right">
+							<h:outputText value="#{c.produto.valor}">
+								<f:convertNumber type="currency" currencySymbol="R$" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="Frete" style="text-align: right">
+							<h:outputText value="#{c.frete}">
+								<f:convertNumber type="currency" currencySymbol="R$" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="Valor Total" style="text-align: right">
+							<h:outputText value="#{c.valorTotal}">
+								<f:convertNumber type="currency" currencySymbol="R$" />
+							</h:outputText>
+						</p:column>
+
+						<p:columnGroup type="footer">
+							<p:row>
+								<p:column colspan="5" style="text-align:right"
+									footerText="Total Compra:" />
+								<p:column footerText="R$ #{finalizarController.somaTotal}"
+									style="text-align: right" />
+							</p:row>
+						</p:columnGroup>
+					</p:dataTable>
+				</h:form>
+
+			</p:layoutUnit>
+			<p:layoutUnit position="center">
+
+
+				<h:form id="form_panel">
+				<p:growl id="message" showDetail="true" />
+					<p:panel id="basic" header="Forma de pagamento"
+						footer="*A parcela mínima não pode ser inferior a R$ 10,00"
+						style="margin-bottom:20px;">
+
+						<h:panelGrid columns="2" cellpadding="10">
+
+							<h:outputText value="Usuario:" />
+							<h:outputText value="#{finalizarController.usuario.nome}" />
+
+							<h:outputText value="Endereço:" />
+							<h:outputText
+								value="#{finalizarController.usuario.endereco}, #{finalizarController.usuario.numero}" />
+
+							<p:outputLabel value="Parcelas:" for="dd" />
+							<p:autoComplete id="dd" dropdown="true"
+								value="#{finalizarController.parcela}"
+								completeMethod="#{finalizarController.comboBoxParcelas}" />
+
+
+							<h:outputText value="Cupom:" />
+							<p:inputText value="#{finalizarController.cupom}" />
+
+							<h:outputText value="Valor do cupom:"
+								rendered="#{cupom_value le 0}" />
+							<h:outputText value="#{cupom_value}"
+								rendered="#{cupom_value le 0}" />
+
+							<h:outputText value="Finalizar Compra:" />
+							<h:commandButton value="Enviar"
+								action="#{finalizarController.finalizaCompra}" update="message"></h:commandButton>
+
+							<h:outputText value="Valor da Compra:" />
+							<h:outputText value="#{finalizarController.somaTotal}" />
+
+						</h:panelGrid>
+					</p:panel>
+				</h:form>
+
+			</p:layoutUnit>
+		</p:layout>
+
+
+	</ui:define>
+</ui:composition>
+
